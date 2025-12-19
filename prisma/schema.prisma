@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique
@@ -20,6 +15,11 @@ model User {
   role      Role      @default(USER)
   accounts  Account[]
   createdAt DateTime  @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Account {
@@ -34,19 +34,19 @@ model Account {
   updatedAt     DateTime      @updatedAt
 }
 
-enum TxType {
+model Transaction {
+  id            Int             @id @default(autoincrement())
+  amount        Float
+  type          TransactionType
+  fromAccountId Int?
+  toAccountId   Int?
+  fromAccount   Account?        @relation("fromAccount", fields: [fromAccountId], references: [id])
+  toAccount     Account?        @relation("toAccount", fields: [toAccountId], references: [id])
+  createdAt     DateTime        @default(now())
+}
+
+enum TransactionType {
   DEPOSIT
   WITHDRAWN
   TRANSFER
-}
-
-model Transaction {
-  id            Int      @id @default(autoincrement())
-  amount        Float
-  type          TxType
-  fromAccountId Int?
-  toAccountId   Int?
-  fromAccount   Account? @relation("fromAccount", fields: [fromAccountId], references: [id])
-  toAccount     Account? @relation("toAccount", fields: [toAccountId], references: [id])
-  createdAt     DateTime @default(now())
 }
