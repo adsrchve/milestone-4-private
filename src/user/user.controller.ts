@@ -1,25 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
-import { PrismaService } from './../prisma/prisma.service';
+import { UserService } from './user.service';
+import { Controller, Get, Body, Patch, UseGuards, Req } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private userService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getProfile(@Req() req) {
-    const userId = req.user.userId;
-    return this.prisma.user.findUnique({ where: { id:userId }});
+  getProfile(@Req() req) {
+    return this.userService.getProfile(req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('profile')
-  async updateProfile(@Req() req, @Body() data: { name?: string; email?: string }) {
-    const userId = req.user.userId;
-    return this.prisma.user.update({
-      where: { id: userId },
-      data,
-    });
+  updateProfile(@Req() req, @Body() dto: UpdateUserDto ) {
+    return this.userService.updateProfile(req.user.id, dto);
   }
 }
+ 

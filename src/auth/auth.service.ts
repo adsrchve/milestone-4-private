@@ -14,28 +14,26 @@ export class AuthService {
 
   // REGISTER
   async register(dto: RegisterDto) {
-    try{
-      const existing = await this.prisma.user.findUnique({
+    const existing = await this.prisma.user.findUnique({
         where: { email: dto.email },
-      });
-    
-      if(existing) {
+    });
+
+    if (existing) {
         throw new BadRequestException('Email already registered.');
-      }
-
-      const hashedPassword = await bcrypt.hash(dto.password, 10);
-
-      return this.prisma.user.create({
-        data: {
-          email: dto.email,
-          password: hashedPassword,
-          name: dto.name,
-        }
-      });
-    } catch (error) {
-      console.error('REGISTER ERROR', error);
-      throw error;
     }
+
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: dto.email,
+        password: hashedPassword,
+        name: dto.name,
+      },
+    });
+
+    const { password, ...safeUser } = user;
+    return safeUser;
   }
 
   // LOGIN 
@@ -55,6 +53,6 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign(payload),
-    }
+    };
   }
 }

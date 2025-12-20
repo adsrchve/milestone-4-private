@@ -41,7 +41,7 @@ export class TransactionService {
     return this.prisma.transaction.create({
       data: {
         amount,
-        type: TransactionType.WITHDRAWN,
+        type: TransactionType.WITHDRAWAL,
         fromAccountId,
       },
     });
