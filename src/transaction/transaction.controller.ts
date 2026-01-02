@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
@@ -11,9 +13,9 @@ export class TransactionController {
     return this.transactionService.deposit(dto.toAccountId!, dto.amount);
   }
 
-  @Post('withdrawn')
-  withdrawn(@Body() dto: CreateTransactionDto) {
-    return this.transactionService.withdrawn(dto.fromAccountId!, dto.amount);
+  @Post('withdraw')
+  withdraw(@Body() dto: CreateTransactionDto) {
+    return this.transactionService.withdraw(dto.fromAccountId!, dto.amount);
   }
 
   @Post('transfer')
@@ -27,7 +29,7 @@ export class TransactionController {
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id') id: string) {
     return this.transactionService.getTransaction(id);
   }
 }

@@ -1,14 +1,18 @@
-import { IsNumber, IsOptional } from "class-validator";
+import { TransactionType } from "@prisma/client";
+import { IsEnum, IsNotEmpty, IsUUID, IsOptional } from "class-validator";
 
 export class CreateTransactionDto {
-    @IsNumber()
-    amount: number;
+    @IsNotEmpty()
+    amount: string;
+    
+    @IsEnum(TransactionType)
+    type: TransactionType;
+
+    @IsOptional()
+    @IsUUID()
+    fromAccountId?: string;
     
     @IsOptional()
-    @IsNumber()
-    fromAccountId?: number;
-    
-    @IsOptional()
-    @IsNumber()
-    toAccountId?: number;
+    @IsUUID()
+    toAccountId?: string;
 }

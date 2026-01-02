@@ -1,23 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
 @Injectable()
 export class AccountService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: number, dto: CreateAccountDto) {
+  create(userId: string, dto: CreateAccountDto) {
     return this.prisma.account.create({
-      data: { ...dto, userId, balance: 0 },
+      data: { ...dto, userId, balance: new Prisma.Decimal(0) },
     });
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: string) {
     return this.prisma.account.findMany({ where: { userId } });
   }
 
-  async findOne(userId: number, id: number) {
+  async findOne(userId: string, id: string) {
     const account = await this.prisma.account.findFirst({
       where: { id, userId },
     });
@@ -25,7 +26,7 @@ export class AccountService {
     return account;
   }
 
-  async update(userId: number, id: number, dto: UpdateAccountDto) {
+  async update(userId: string, id: string, dto: UpdateAccountDto) {
     await this.findOne(userId, id);
     return this.prisma.account.update({
       where: { id },
@@ -33,7 +34,7 @@ export class AccountService {
     });
   }
 
-  async remove(userId: number, id: number) {
+  async remove(userId: string, id: string) {
     await this.findOne(userId, id);
     return this.prisma.account.delete({ where: { id } });
   }
