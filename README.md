@@ -4,9 +4,24 @@ Backend REST API for a simple digital banking system built with NestJS, Prisma O
 The purpose of this project is to learn about how backend system works. This is a milestone 4 assignment.
 
 ## Deployment
-You can visit this website here
+**Base API URL:** <br>
+Railway: [revobank-adsrchve.up.railway.app](revobank-adsrchve.up.railway.app)
 
-[https://milestone-4-private-production.up.railway.app/](https://milestone-4-private-production.up.railway.app/)
+**Swagger Documentation** <br>
+Swagger UI: [revobank-adsrchve.up.railway.app/api](revobank-adsrchve.up.railway.app/api)
+
+## Railway Deployment
+**Build Command** <br>
+```
+pnpm install
+pnpm prisma generate
+pnpm prisma migrate deploy
+pnpm run build
+```
+**Start Command** <br>
+```
+pnpm run start:prod
+```
 
 ## Tech Stack
 - NestJS
@@ -60,11 +75,16 @@ POST `/auth/login`
   "email": "anindya@mail.com",
   "password": "anin123"
 }
-```
 Response:
-```
+```json
 {
-  "access_token": "JWT_TOKEN"
+  "accessToken": "JWT_TOKEN",
+  "user": {
+    "id": 1,
+    "email": "anindya@mail.com",
+    "name": "Anindya",
+    "role": "USER"
+  }
 }
 ```
 Use this token for protected routes:
@@ -72,20 +92,19 @@ Use this token for protected routes:
 Authorization: Bearer JWT_TOKEN
 ```
 
-## Deployment
-The deployment using Railway.
+## Testing
+This project includes **unit tests for core business logic services**:
+- `TransactionService`: deposit, withdraw, transfer, balance validation, and unauthorized access
+- `AccountService`: account creation, retrieval, access control, and balance handling
 
-<b> Build Command </b>
+Run all tests:
 ```
-pnpm install
-pnpm prisma generate
-pnpm prisma migrate deploy
-pnpm run build
+pnpm test
 ```
 
-**Start Command**
+Generate coverage report:
 ```
-pnpm run start:prod
+pnpm run test:cov
 ```
 
 ## Author
