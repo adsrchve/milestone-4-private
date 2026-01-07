@@ -10,7 +10,7 @@ export class TransactionService {
   constructor(private prisma: PrismaService) {}
 
   // Deposit
-  async deposit(dto: DepositDto, userId: string): Promise<TransactionResponseDto> {
+  async deposit(p0: number, p1: number, p2: number, dto: DepositDto, userId: string): Promise<TransactionResponseDto> {
     const { toAccountId, amount } = dto;
     const account = await this.prisma.account.findUnique({
       where: { id: toAccountId },
@@ -47,7 +47,7 @@ export class TransactionService {
 
 
   // Withdraw
-  async withdraw(dto: WithdrawDto, userId: string): Promise<TransactionResponseDto> {
+  async withdraw(p0: number, p1: number, p2: number, dto: WithdrawDto, userId: string): Promise<TransactionResponseDto> {
     const { fromAccountId, amount } = dto;
     const account = await this.prisma.account.findUnique({
       where: { id: fromAccountId },
@@ -84,7 +84,7 @@ export class TransactionService {
   }
 
   // Transfer
-  async transfer(dto: TransferDto, userId: string): Promise<TransactionResponseDto> {
+  async transfer(p0: number, p1: number, p2: number, p3: number, dto: TransferDto, userId: string): Promise<TransactionResponseDto> {
     const { fromAccountId, toAccountId, amount } = dto;
 
     if (fromAccountId === toAccountId) throw new BadRequestException('Cannot transfer to the same account');
